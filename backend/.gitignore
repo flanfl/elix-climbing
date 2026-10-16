@@ -25,3 +25,6 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 climbing-*.tar
 
+
+# Dialyzer PLTs (rebuilt on demand by `mix dialyzer`)
+/priv/plts/

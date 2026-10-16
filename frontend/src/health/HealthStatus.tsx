@@ -5,9 +5,7 @@ import { fetchHealth, type HealthReport } from './healthApi'
 // (loading AND a report, say) unrepresentable. It does NOT, on its own, force the switch below
 // to handle every case: a missing case compiles fine. The `never` guard in `default` does.
 type State =
-  | { kind: 'loading' }
-  | { kind: 'loaded'; report: HealthReport }
-  | { kind: 'unreachable' }
+  { kind: 'loading' } | { kind: 'loaded'; report: HealthReport } | { kind: 'unreachable' }
 
 function describe(report: HealthReport): string {
   if (report.status === 'ok') return 'API ok'
