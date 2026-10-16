@@ -1,0 +1,24 @@
+# Local development infrastructure. Postgres only — Elixir and Node run on the host
+# (via mise) so you get native speed, debuggers and file watching.
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      # Dev-only credentials. They match what `mix phx.new` writes into backend/config/dev.exs.
+      # No POSTGRES_DB: Ecto creates climbing_dev / climbing_test itself (`mix ecto.create`).
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      # Bound to loopback so the DB is not reachable from the network.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

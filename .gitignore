@@ -1,0 +1,16 @@
+# Repo-wide ignores only. Phoenix (backend/) and Vite (frontend/) each generate
+# their own .gitignore for build output (_build, deps, node_modules, dist...).
+
+# Local secrets / overrides — never commit
+.env
+.env.*
+!.env.example
+
+# Editors and OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Erlang VM crash dumps (can land in whatever directory a mix command ran from)
+erl_crash.dump
