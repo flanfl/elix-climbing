@@ -7,8 +7,8 @@ React / TypeScript (frontend).
 
 | Path        | What                                              |
 |-------------|---------------------------------------------------|
-| `backend/`  | Phoenix JSON API (Elixir/OTP) — _not yet created_ |
-| `frontend/` | Vite + React + TypeScript SPA — _not yet created_ |
+| `backend/`  | Phoenix JSON API (Elixir/OTP)                     |
+| `frontend/` | Vite + React + TypeScript SPA                     |
 
 ## Prerequisites
 
