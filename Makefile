@@ -20,7 +20,8 @@ db-stop: ## Stop Postgres (the data volume is kept)
 	docker compose stop db
 
 be: db ## Run the Phoenix API on http://localhost:4000
-	cd backend && mix phx.server
+	cd backend
+# && mix phx.server
 
 fe: ## Run the Vite dev server on http://localhost:5173 (proxies /api to :4000)
 	cd frontend && npm run dev

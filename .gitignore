@@ -14,3 +14,6 @@
 
 # Erlang VM crash dumps (can land in whatever directory a mix command ran from)
 erl_crash.dump
+
+.jolli
+.claude
