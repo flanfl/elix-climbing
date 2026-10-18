@@ -61,7 +61,8 @@ defmodule Climbing.MixProject do
       {:bandit, "~> 1.5"},
       # Static analysis: dev/test only, and never started with the app (runtime: false).
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.16", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -83,6 +84,7 @@ defmodule Climbing.MixProject do
         "deps.unlock --unused",
         "format",
         "credo --strict",
+        "sobelow --private --exit",
         "test",
         "dialyzer"
       ],
@@ -92,6 +94,7 @@ defmodule Climbing.MixProject do
         "deps.unlock --check-unused",
         "format --check-formatted",
         "credo --strict",
+        "sobelow --private --exit",
         "test",
         "dialyzer"
       ]

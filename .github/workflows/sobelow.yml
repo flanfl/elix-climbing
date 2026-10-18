@@ -1,0 +1,49 @@
+# Security scan of the Phoenix backend. CodeQL has no Elixir support, so Sobelow fills that gap
+# and reports into the same place: Security → Code scanning on GitHub.
+name: Sobelow
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+  schedule:
+    - cron: "27 4 * * 1" # weekly, so new rules catch existing code too
+
+permissions:
+  contents: read
+
+jobs:
+  sobelow:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # upload the SARIF report to Code scanning
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+
+      # Installs the Erlang/Elixir versions pinned in mise.toml.
+      - uses: jdx/mise-action@v3
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            backend/deps
+            backend/_build
+          key: sobelow-${{ runner.os }}-${{ hashFiles('mise.toml', 'backend/mix.lock') }}
+
+      - run: mix local.hex --force && mix local.rebar --force && mix deps.get
+
+      # --private skips Sobelow's online version check.
+      - run: mix sobelow --private --format sarif --out sobelow.sarif
+
+      # Sobelow writes paths relative to backend/; Code scanning expects them relative to the repo root.
+      - run: jq '(.runs[].results[]?.locations[]?.physicalLocation.artifactLocation.uri) |= "backend/" + .' sobelow.sarif > sobelow-root.sarif
+
+      - uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: backend/sobelow-root.sarif
+          category: sobelow
