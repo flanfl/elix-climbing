@@ -1,7 +1,12 @@
 defmodule Climbing.Training.Workout do
+  @moduledoc false
   use Ecto.Schema
+
   import Ecto.Changeset
-  alias Climbing.Training.Effort, as: Effort
+
+  alias Climbing.Training.Effort
+
+  @type t :: %__MODULE__{}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -9,7 +14,7 @@ defmodule Climbing.Training.Workout do
     field :performed_on, :date
     field :kind, Ecto.Enum, values: [:bouldering, :lead, :hangboard, :conditioning]
     field :notes, :string
-    has_many :efforts, Climbing.Training.Effort
+    has_many :efforts, Effort
 
     timestamps(type: :utc_datetime)
   end

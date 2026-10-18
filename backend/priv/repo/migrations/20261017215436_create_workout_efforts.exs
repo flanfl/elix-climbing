@@ -7,7 +7,9 @@ defmodule Climbing.Repo.Migrations.CreateWorkoutEfforts do
       add :aspect, :string, null: false
       add :rpe, :integer, null: false
       add :minutes, :integer, null: false
-      add :workout_id, references(:workouts, on_delete: :delete_all, type: :binary_id), null: false
+
+      add :workout_id, references(:workouts, on_delete: :delete_all, type: :binary_id),
+        null: false
 
       timestamps(type: :utc_datetime)
     end
