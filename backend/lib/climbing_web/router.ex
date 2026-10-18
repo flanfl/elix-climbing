@@ -9,6 +9,8 @@ defmodule ClimbingWeb.Router do
     pipe_through :api
 
     get "/health", HealthController, :index
+    get "/workouts", WorkoutController, :index
+    get "/workouts/:id", WorkoutController, :show
   end
 
   # Enable LiveDashboard in development

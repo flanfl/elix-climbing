@@ -7,10 +7,6 @@
 # General application configuration
 import Config
 
-config :climbing,
-  ecto_repos: [Climbing.Repo],
-  generators: [timestamp_type: :utc_datetime, binary_id: true]
-
 # Configure the endpoint
 config :climbing, ClimbingWeb.Endpoint,
   url: [host: "localhost"],
@@ -21,6 +17,10 @@ config :climbing, ClimbingWeb.Endpoint,
   ],
   pubsub_server: Climbing.PubSub,
   live_view: [signing_salt: "Od/MYvr4"]
+
+config :climbing,
+  ecto_repos: [Climbing.Repo],
+  generators: [timestamp_type: :utc_datetime, binary_id: true]
 
 # Configure Elixir's Logger
 config :logger, :default_formatter,

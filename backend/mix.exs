@@ -62,7 +62,8 @@ defmodule Climbing.MixProject do
       # Static analysis: dev/test only, and never started with the app (runtime: false).
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:sobelow, "~> 0.16", only: [:dev, :test], runtime: false}
+      {:sobelow, "~> 0.16", only: [:dev, :test], runtime: false},
+      {:styler, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 

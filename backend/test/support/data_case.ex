@@ -20,12 +20,12 @@ defmodule Climbing.DataCase do
 
   using do
     quote do
-      alias Climbing.Repo
-
+      import Climbing.DataCase
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Climbing.DataCase
+
+      alias Climbing.Repo
     end
   end
 
