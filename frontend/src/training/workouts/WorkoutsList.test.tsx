@@ -1,4 +1,5 @@
-import { render, screen, within } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
+import { renderWithProviders } from '@/test/renderWithProviders'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import WorkoutsList from './WorkoutsList'
 import { fetchWorkouts } from './workoutsApi'
@@ -13,7 +14,7 @@ describe('WorkoutsList', () => {
   it('shows a waiting message until the API has answered', () => {
     vi.mocked(fetchWorkouts).mockReturnValue(new Promise(() => {}))
 
-    render(<WorkoutsList />)
+    renderWithProviders(<WorkoutsList />)
 
     expect(screen.getByRole('status')).toHaveTextContent('Loading workouts')
   })
@@ -24,7 +25,7 @@ describe('WorkoutsList', () => {
       { id: '2', performedOn: '2026-10-19', kind: 'hangboard', notes: null },
     ])
 
-    render(<WorkoutsList />)
+    renderWithProviders(<WorkoutsList />)
 
     const rows = within(await screen.findByRole('table')).getAllByRole('row')
     // The first row is the header.
@@ -36,7 +37,7 @@ describe('WorkoutsList', () => {
   it('says so when there are no workouts', async () => {
     vi.mocked(fetchWorkouts).mockResolvedValue([])
 
-    render(<WorkoutsList />)
+    renderWithProviders(<WorkoutsList />)
 
     expect(await screen.findByText('No workouts yet')).toBeInTheDocument()
   })
@@ -44,7 +45,7 @@ describe('WorkoutsList', () => {
   it('reports a failure to load', async () => {
     vi.mocked(fetchWorkouts).mockRejectedValue(new TypeError('Failed to fetch'))
 
-    render(<WorkoutsList />)
+    renderWithProviders(<WorkoutsList />)
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Could not load workouts')
   })

@@ -1,11 +1,6 @@
-import { useEffect, useState } from 'react'
-import { fetchHealth, type HealthReport } from './healthApi'
-
-// One state per thing the user can see. A discriminated union makes impossible combinations
-// (loading AND a report, say) unrepresentable. It does NOT, on its own, force the switch below
-// to handle every case: a missing case compiles fine. The `never` guard in `default` does.
-type State =
-  { kind: 'loading' } | { kind: 'loaded'; report: HealthReport } | { kind: 'unreachable' }
+import { useQuery } from '@tanstack/react-query'
+import type { HealthReport } from './healthApi'
+import { healthQuery } from './healthQueries'
 
 function describe(report: HealthReport): string {
   if (report.status === 'ok') return 'API ok'
@@ -16,32 +11,32 @@ function describe(report: HealthReport): string {
 }
 
 function HealthStatus() {
-  const [state, setState] = useState<State>({ kind: 'loading' })
+  // The result is a discriminated union on `status`, so the switch below narrows it: `data` only
+  // exists in the 'success' branch. Query also cancels the request if the component goes away.
+  const query = useQuery(healthQuery)
 
-  useEffect(() => {
-    // Cancels the request if the component goes away before the answer (and in dev, where
-    // StrictMode mounts, unmounts and remounts every component once to expose such bugs).
-    const controller = new AbortController()
-
-    fetchHealth(controller.signal)
-      .then((report) => setState({ kind: 'loaded', report }))
-      .catch(() => {
-        if (!controller.signal.aborted) setState({ kind: 'unreachable' })
-      })
-
-    return () => controller.abort()
-  }, [])
-
-  switch (state.kind) {
-    case 'loading':
-      return <p role="status">Checking the API…</p>
-    case 'loaded':
-      return <p role="status">{describe(state.report)}</p>
-    case 'unreachable':
-      return <p role="alert">API unreachable</p>
+  switch (query.status) {
+    case 'pending':
+      return (
+        <p role="status" className="text-sm text-muted-foreground">
+          Checking the API…
+        </p>
+      )
+    case 'success':
+      return (
+        <p role="status" className="text-sm text-muted-foreground">
+          {describe(query.data)}
+        </p>
+      )
+    case 'error':
+      return (
+        <p role="alert" className="text-sm text-destructive">
+          API unreachable
+        </p>
+      )
     default: {
-      // Adding a State variant without handling it above makes this line a compile error.
-      const unhandled: never = state
+      // A status added by a future Query version without a case above is a compile error here.
+      const unhandled: never = query
       return unhandled
     }
   }
