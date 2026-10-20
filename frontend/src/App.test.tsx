@@ -6,6 +6,9 @@ import App from './App'
 vi.mock('./health/healthApi', () => ({
   fetchHealth: vi.fn(() => new Promise(() => {})),
 }))
+vi.mock('./training/workouts/workoutsApi', () => ({
+  fetchWorkouts: vi.fn(() => new Promise(() => {})),
+}))
 
 describe('App', () => {
   it('shows the application name as the page heading', () => {
@@ -17,6 +20,12 @@ describe('App', () => {
   it('shows the API status', () => {
     render(<App />)
 
-    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(screen.getByText('Checking the API…')).toBeInTheDocument()
+  })
+
+  it('shows the workouts', () => {
+    render(<App />)
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Workouts' })).toBeInTheDocument()
   })
 })
