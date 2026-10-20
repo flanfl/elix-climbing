@@ -34,11 +34,23 @@ function HealthStatus() {
 
   switch (state.kind) {
     case 'loading':
-      return <p role="status">Checking the API…</p>
+      return (
+        <p role="status" className="text-sm text-muted-foreground">
+          Checking the API…
+        </p>
+      )
     case 'loaded':
-      return <p role="status">{describe(state.report)}</p>
+      return (
+        <p role="status" className="text-sm text-muted-foreground">
+          {describe(state.report)}
+        </p>
+      )
     case 'unreachable':
-      return <p role="alert">API unreachable</p>
+      return (
+        <p role="alert" className="text-sm text-destructive">
+          API unreachable
+        </p>
+      )
     default: {
       // Adding a State variant without handling it above makes this line a compile error.
       const unhandled: never = state

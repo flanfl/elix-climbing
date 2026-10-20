@@ -15,6 +15,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    // Must match `resolve.alias` in vite.config.ts.
+    "paths": { "@/*": ["./src/*"] },
 
     /* Linting */
     // Explicit on purpose: TypeScript 6 turned it on by default (measured, not assumed), but

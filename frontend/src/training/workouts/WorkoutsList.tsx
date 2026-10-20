@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { fetchWorkouts, type Workout } from './workoutsApi'
 
 type State = { kind: 'loading' } | { kind: 'loaded'; workouts: Workout[] } | { kind: 'failed' }
@@ -19,8 +27,10 @@ function WorkoutsList() {
   }, [])
 
   return (
-    <section aria-labelledby="workouts-heading">
-      <h2 id="workouts-heading">Workouts</h2>
+    <section aria-labelledby="workouts-heading" className="space-y-4">
+      <h2 id="workouts-heading" className="text-2xl font-semibold tracking-tight">
+        Workouts
+      </h2>
       <WorkoutsContent state={state} />
     </section>
   )
@@ -29,32 +39,43 @@ function WorkoutsList() {
 function WorkoutsContent({ state }: { state: State }) {
   switch (state.kind) {
     case 'loading':
-      return <p role="status">Loading workouts…</p>
-    case 'failed':
-      return <p role="alert">Could not load workouts</p>
-    case 'loaded':
-      if (state.workouts.length === 0) return <p>No workouts yet</p>
       return (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Kind</th>
-              <th scope="col">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
+        <p role="status" className="text-muted-foreground">
+          Loading workouts…
+        </p>
+      )
+    case 'failed':
+      return (
+        <p role="alert" className="text-destructive">
+          Could not load workouts
+        </p>
+      )
+    case 'loaded':
+      if (state.workouts.length === 0) {
+        return <p className="text-muted-foreground">No workouts yet</p>
+      }
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead scope="col">Date</TableHead>
+              <TableHead scope="col">Kind</TableHead>
+              <TableHead scope="col">Notes</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {state.workouts.map((workout) => (
-              <tr key={workout.id}>
-                <td>
+              <TableRow key={workout.id}>
+                <TableCell>
                   <time dateTime={workout.performedOn}>{workout.performedOn}</time>
-                </td>
-                <td>{workout.kind}</td>
-                <td>{workout.notes ?? ''}</td>
-              </tr>
+                </TableCell>
+                <TableCell className="capitalize">{workout.kind}</TableCell>
+                {/* whitespace-normal: notes are free text and should wrap, unlike the other cells. */}
+                <TableCell className="whitespace-normal">{workout.notes ?? ''}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )
     default: {
       const unhandled: never = state
