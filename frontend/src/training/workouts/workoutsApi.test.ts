@@ -68,4 +68,10 @@ describe('fetchWorkouts', () => {
 
     await expect(fetchWorkouts()).rejects.toThrow('Unexpected response shape')
   })
+
+  it('rejects when a workout date is not an ISO date', async () => {
+    respondWith(200, { data: [{ ...wireWorkout, performed_on: '18/10/2026' }] })
+
+    await expect(fetchWorkouts()).rejects.toThrow('Unexpected response shape')
+  })
 })
