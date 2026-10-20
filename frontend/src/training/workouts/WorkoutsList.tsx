@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import {
   Table,
   TableBody,
@@ -7,51 +7,38 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { fetchWorkouts, type Workout } from './workoutsApi'
-
-type State = { kind: 'loading' } | { kind: 'loaded'; workouts: Workout[] } | { kind: 'failed' }
+import type { Workout } from './workoutsApi'
+import { workoutsQuery } from './workoutsQueries'
 
 function WorkoutsList() {
-  const [state, setState] = useState<State>({ kind: 'loading' })
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    fetchWorkouts(controller.signal)
-      .then((workouts) => setState({ kind: 'loaded', workouts }))
-      .catch(() => {
-        if (!controller.signal.aborted) setState({ kind: 'failed' })
-      })
-
-    return () => controller.abort()
-  }, [])
+  const query = useQuery(workoutsQuery)
 
   return (
     <section aria-labelledby="workouts-heading" className="space-y-4">
       <h2 id="workouts-heading" className="text-2xl font-semibold tracking-tight">
         Workouts
       </h2>
-      <WorkoutsContent state={state} />
+      <WorkoutsContent query={query} />
     </section>
   )
 }
 
-function WorkoutsContent({ state }: { state: State }) {
-  switch (state.kind) {
-    case 'loading':
+function WorkoutsContent({ query }: { query: UseQueryResult<Workout[]> }) {
+  switch (query.status) {
+    case 'pending':
       return (
         <p role="status" className="text-muted-foreground">
           Loading workouts…
         </p>
       )
-    case 'failed':
+    case 'error':
       return (
         <p role="alert" className="text-destructive">
           Could not load workouts
         </p>
       )
-    case 'loaded':
-      if (state.workouts.length === 0) {
+    case 'success':
+      if (query.data.length === 0) {
         return <p className="text-muted-foreground">No workouts yet</p>
       }
       return (
@@ -64,7 +51,7 @@ function WorkoutsContent({ state }: { state: State }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {state.workouts.map((workout) => (
+            {query.data.map((workout) => (
               <TableRow key={workout.id}>
                 <TableCell>
                   <time dateTime={workout.performedOn}>{workout.performedOn}</time>
@@ -78,7 +65,7 @@ function WorkoutsContent({ state }: { state: State }) {
         </Table>
       )
     default: {
-      const unhandled: never = state
+      const unhandled: never = query
       return unhandled
     }
   }

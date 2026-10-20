@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { renderWithProviders } from '@/test/renderWithProviders'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 
@@ -12,19 +13,19 @@ vi.mock('./training/workouts/workoutsApi', () => ({
 
 describe('App', () => {
   it('shows the application name as the page heading', () => {
-    render(<App />)
+    renderWithProviders(<App />)
 
     expect(screen.getByRole('heading', { level: 1, name: 'elix-climbing' })).toBeInTheDocument()
   })
 
   it('shows the API status', () => {
-    render(<App />)
+    renderWithProviders(<App />)
 
     expect(screen.getByText('Checking the API…')).toBeInTheDocument()
   })
 
   it('shows the workouts', () => {
-    render(<App />)
+    renderWithProviders(<App />)
 
     expect(screen.getByRole('heading', { level: 2, name: 'Workouts' })).toBeInTheDocument()
   })

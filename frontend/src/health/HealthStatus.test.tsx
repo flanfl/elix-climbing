@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { renderWithProviders } from '@/test/renderWithProviders'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import HealthStatus from './HealthStatus'
 import { fetchHealth } from './healthApi'
@@ -14,7 +15,7 @@ describe('HealthStatus', () => {
   it('shows a waiting message until the API has answered', () => {
     vi.mocked(fetchHealth).mockReturnValue(new Promise(() => {}))
 
-    render(<HealthStatus />)
+    renderWithProviders(<HealthStatus />)
 
     expect(screen.getByRole('status')).toHaveTextContent('Checking the API')
   })
@@ -22,7 +23,7 @@ describe('HealthStatus', () => {
   it('shows ok when the API is healthy', async () => {
     vi.mocked(fetchHealth).mockResolvedValue({ status: 'ok', checks: { database: 'up' } })
 
-    render(<HealthStatus />)
+    renderWithProviders(<HealthStatus />)
 
     expect(await screen.findByText('API ok')).toBeInTheDocument()
   })
@@ -33,7 +34,7 @@ describe('HealthStatus', () => {
       checks: { database: 'down' },
     })
 
-    render(<HealthStatus />)
+    renderWithProviders(<HealthStatus />)
 
     expect(await screen.findByText('API degraded: database down')).toBeInTheDocument()
   })
@@ -41,7 +42,7 @@ describe('HealthStatus', () => {
   it('says the API is unreachable when the request fails', async () => {
     vi.mocked(fetchHealth).mockRejectedValue(new TypeError('Failed to fetch'))
 
-    render(<HealthStatus />)
+    renderWithProviders(<HealthStatus />)
 
     expect(await screen.findByRole('alert')).toHaveTextContent('API unreachable')
   })
